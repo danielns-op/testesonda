@@ -1,6 +1,6 @@
 from flask import Flask, abort
 import json
-
+# teste
 app = Flask(__name__)
 
 # Carrega a posição da sonda de um arquivo JSON.
