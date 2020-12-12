@@ -1,5 +1,6 @@
 from flask import Flask, abort
 import json
+import os
 # teste
 app = Flask(__name__)
 
@@ -103,5 +104,6 @@ def movimentar(valor):
         log_movimento = ler_log.read()
         return f'Log movimentos:\n{log_movimento}\n\nPosição final: {sonda}'
 
-
-app.run(use_reloader=True)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, use_reloader=True)
