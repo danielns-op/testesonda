@@ -1,7 +1,7 @@
 from flask import Flask, abort
 import json
 import os
-# teste
+
 app = Flask(__name__)
 
 # Carrega a posição da sonda de um arquivo JSON.
@@ -16,9 +16,7 @@ limpa_arquivo.close()
 
 @app.route('/')
 def index():
-    html = ["<ul><title>Sonda</title>"
-            "<li><a href='/retorno'>Retorna posição</a></li>"
-            "<li><a href='/atual'>Posição atual</a></li></ul>"]
+    html = ["<ul><title>Sonda</title>"]
     return '\n'.join(html)
 
 
@@ -28,8 +26,8 @@ def posicao_inicial():
     with open('posicao_sonda.json', 'w') as retomar_posicao:
         json.dump(pos_inicio, retomar_posicao)
     retomar_posicao.close()
-    retorno = ["<ul><span>Sonda retomada para a posição inicial.</span><br><br><a href='/'>HOME</a></ul>"]
-    return '\n'.join(retorno)
+    retorno = 'Sonda retomada para a posição inicial.'
+    return f'{retorno}{pos_inicio}'
 
 
 @app.route('/atual')
@@ -37,11 +35,11 @@ def posicao_atual():
     with open('posicao_sonda.json', 'r') as ver_posicao:
         posicao = json.load(ver_posicao)
     ver_posicao.close()
-    pos_atual = [f"<ul><span>Posição atual da Sonda: {posicao}</span><br><br><a href='/'>HOME</a></ul>"]
-    return 'n'.join(pos_atual)
+    pos_atual = posicao
+    return pos_atual
 
 
-@app.route('/move/<valor>/')
+@app.route('/move/<valor>')
 def movimentar(valor):
     log = open('detalhes_movimento.log', 'a')
     move = 'x'  # Caso (0, 0) movimenta no eixo X.
@@ -53,7 +51,8 @@ def movimentar(valor):
             move = 'y'
         elif acao == 'GE' and sonda['Direcao'] == 'C':
             sonda['Direcao'] = 'E'
-            log.write('Girou para a esquerda e ficou com a face para Esquerda.\n')
+            log.write('Girou para a esquerda e ficou com a face para \
+                Esquerda.\n')
             move = 'x'
         elif acao == 'GE' and sonda['Direcao'] == 'E':
             sonda['Direcao'] = 'B'
@@ -61,7 +60,8 @@ def movimentar(valor):
             move = 'y'
         elif acao == 'GE' and sonda['Direcao'] == 'B':
             sonda['Direcao'] = 'D'
-            log.write('Girou para a esquerda e ficou com a face para Direita.\n')
+            log.write('Girou para a esquerda e ficou com a face para Direita.\
+                \n')
             move = 'x'
         if acao == 'GD' and sonda['Direcao'] == 'D':
             sonda['Direcao'] = 'B'
@@ -69,7 +69,8 @@ def movimentar(valor):
             move = 'y'
         elif acao == 'GD' and sonda['Direcao'] == 'B':
             sonda['Direcao'] = 'E'
-            log.write('Girou para a direita e ficou com a face para Esquerda.\n')
+            log.write('Girou para a direita e ficou com a face para Esquerda.\
+                \n')
             move = 'x'
         elif acao == 'GD' and sonda['Direcao'] == 'E':
             sonda['Direcao'] = 'C'
@@ -77,7 +78,8 @@ def movimentar(valor):
             move = 'y'
         elif acao == 'GD' and sonda['Direcao'] == 'C':
             sonda['Direcao'] = 'D'
-            log.write('Girou para a direita e ficou com a face para Direita.\n')
+            log.write('Girou para a direita e ficou com a face para Direita.\
+                \n')
             move = 'x'
         if acao == 'M' and sonda['Direcao'] == 'C':
             sonda[move] += 1
@@ -95,7 +97,7 @@ def movimentar(valor):
     if sonda['x'] > 4 or sonda['x'] < 0 or sonda['y'] > 4 or sonda['y'] < 0:
         limpa_log = open('detalhes_movimento.log', 'w')
         limpa_log.close()
-        return abort(409, f"Um movimento inválido foi detectado.")
+        return abort(409, "Um movimento inválido foi detectado.")
     else:
         with open('posicao_sonda.json', 'w') as grava_posicao:
             json.dump(sonda, grava_posicao)
@@ -103,6 +105,7 @@ def movimentar(valor):
         ler_log = open('detalhes_movimento.log', 'r')
         log_movimento = ler_log.read()
         return f'Log movimentos:\n{log_movimento}\n\nPosição final: {sonda}'
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
