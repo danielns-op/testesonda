@@ -1,8 +1,9 @@
-from flask import Flask, abort
+from flask import Flask, abort, jsonify
 import json
 import os
 
 app = Flask(__name__)
+api = Api(app)
 
 # Carrega a posição da sonda de um arquivo JSON.
 with open('posicao_sonda.json', 'r') as carrega_posicao:
@@ -16,7 +17,7 @@ limpa_arquivo.close()
 
 @app.route('/')
 def index():
-    html = ["<ul><title>Sonda</title></ul>"]
+    html = ["<ul><title>Sonda</title>"]
     return '\n'.join(html)
 
 
@@ -27,7 +28,7 @@ def posicao_inicial():
         json.dump(pos_inicio, retomar_posicao)
     retomar_posicao.close()
     retorno = 'Sonda retomada para a posição inicial.'
-    return f'{retorno}{pos_inicio}'
+    return f'{retorno}{jsonify(pos_inicio)}'
 
 
 @app.route('/atual')
@@ -106,6 +107,9 @@ def movimentar(valor):
         log_movimento = ler_log.read()
         return f'Log movimentos:\n{log_movimento}\n\nPosição final: {sonda}'
 
+api.add_recurso(Sonda, '/atual')
+api.add_recurso(Sonda, '/atual')
+api.add_recurso(Sonda, '/atual')
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
