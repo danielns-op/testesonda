@@ -7,3 +7,6 @@ __pychace__/
 instance/
 
 exec_comandos.txt
+Pipfile
+Procfile
+requirements.txt
