@@ -1,2 +1,2 @@
 # testesonda
-Repositório para teste de API com flask.
+Projeto de uma API para movimentar uma sonda espacial com flask.
