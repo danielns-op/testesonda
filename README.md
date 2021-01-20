@@ -1,2 +1,2 @@
 # testesonda
-Repositório para teste de API com flash
+Repositório para teste de API com flask.
